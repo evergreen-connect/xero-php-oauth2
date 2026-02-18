@@ -36,8 +36,7 @@ class JWTClaims
     private function verify($token) {
         $json = file_get_contents('https://identity.xero.com/.well-known/openid-configuration/jwks');
         $jwks =  json_decode($json, true);
-        $supportedAlgorithm = (object) ['alg'=>['RS256','ES256']];
-        $verifiedJWT = JWT::decode($token, JWK::parseKeySet($jwks), $supportedAlgorithm);
+        $verifiedJWT = JWT::decode($token, JWK::parseKeySet($jwks));
 
         return $verifiedJWT;
     }
@@ -97,7 +96,7 @@ class JWTClaims
         if (isset($this->idToken)) {
             $tks = explode('.', $this->idToken);
             list($headb64, $bodyb64, $cryptob64) = $tks;
-            $this->jwtDecoded = JWT::jsonDecode(JWT::urlsafeB64Decode($bodyb64),true);
+            $this->jwtDecoded = JWT::jsonDecode(JWT::urlsafeB64Decode($bodyb64));
         
             $this->subvalue = $this->jwtDecoded->{'sub'};
             $this->expiration = $this->jwtDecoded->{'exp'};
@@ -123,7 +122,7 @@ class JWTClaims
         if (isset($this->accessToken)) {
             $tks = explode('.', $this->accessToken);
             list($headb64, $bodyb64, $cryptob64) = $tks;
-            $this->jwtAccessDecoded = JWT::jsonDecode(JWT::urlsafeB64Decode($bodyb64),true);
+            $this->jwtAccessDecoded = JWT::jsonDecode(JWT::urlsafeB64Decode($bodyb64));
 
             $this->authentication_event_id = $this->jwtAccessDecoded->{'authentication_event_id'};
         }
